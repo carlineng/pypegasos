@@ -5,9 +5,10 @@ from VowpalVector import *
 class Pegasos:
 
     def __init__(self, k=5, nbits=18, lamb=.1):
-        self.weights = VowpalVector(nbits, lamb)
-        self.k = k # Batch size. k=1 is SGD, k=N is batch GD
+        self.vector = VowpalVector(nbits)
+        self.batchSize = k # Batch size. k=1 is SGD, k=N is batch GD
         self.t = 1
+        self.lamb = lamb
         self.inputfile = None
         self.outputfile = None
     
@@ -32,7 +33,7 @@ class Pegasos:
                 splitLine = line.split(',')
                 currentBatch.append(splitLine)
 
-                if len(currentBatch) >= self.k:
+                if len(currentBatch) >= self.batchSize:
                     self.processBatch(currentBatch)
                     currentBatch = []
 
@@ -40,4 +41,15 @@ class Pegasos:
             inputfile.close()
 
     def processBatch(self, currentBatch):
-
+        k = len(currentBatch)
+        updateSet = []
+        # Determine which items in the batch contribute to loss
+        for obs in currentBatch:
+            y = int(obs[0])
+            features = obs[0:]
+            inner_product = self.vector.innerProduct(features)
+            if y * inner_product < 1:
+                updateSet.append(obs)
+        
+        eta = 1./(self.lamb * self.t)
+        # TODO update weight vector with information from updateSet
