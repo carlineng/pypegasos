@@ -37,7 +37,7 @@ class Pegasos:
                     self.processBatch(currentBatch)
                     currentBatch = []
 
-            self.processBatch(currentBatch)
+            if len(currentBatch) > 0: self.processBatch(currentBatch)
             inputfile.close()
 
     def processBatch(self, currentBatch):
@@ -45,11 +45,33 @@ class Pegasos:
         updateSet = []
         # Determine which items in the batch contribute to loss
         for obs in currentBatch:
+            if len(obs) < 2: continue
             y = int(obs[0])
-            features = obs[0:]
+
+            if y != -1 and y != 1:
+                print "Training labels must be either -1 or 1"
+                return
+
+            features = obs[1:]
             inner_product = self.vector.innerProduct(features)
             if y * inner_product < 1:
                 updateSet.append(obs)
         
-        eta = 1./(self.lamb * self.t)
-        # TODO update weight vector with information from updateSet
+        # Update weight vector with information from updateSet
+        self.vector.updateWeights(self.lamb, self.t, k, updateSet)
+
+    def predict(self, instance):
+        prediction = self.vector.innerProduct(instance)
+        return prediction
+
+    def writeWeights(self, filename=None):
+        if self.outputfile is None and filename is None:
+            print "No input file specified."
+        else:
+            if filename is None:
+                filename = self.outputfile
+            
+            outf = open(filename, 'w')
+            for w in self.vector.weights:
+                outf.write(str(w) + '\n')
+            outf.close()
