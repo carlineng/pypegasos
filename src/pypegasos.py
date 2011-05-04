@@ -35,6 +35,7 @@ class Pegasos:
 
                 if len(currentBatch) >= self.batchSize:
                     self.processBatch(currentBatch)
+                    self.t = self.t + 1
                     currentBatch = []
 
             if len(currentBatch) > 0: self.processBatch(currentBatch)
