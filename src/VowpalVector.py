@@ -36,6 +36,28 @@ class VowpalVector:
 
         return innerProd
 
+    def processBatch(self, currentBatch, t):
+        k = len(currentBatch)
+        updateSet = []
+        # Determine which items in batch contribute to loss
+        for obs in currentBatch:
+            if len(obs) < 2: continue
+            y = int(obs[0])
+
+            if y != -1 and y != 1:
+                print("Disregarding observation because of invalid training
+                      observation.  Labels must be either -1 or 1")
+                continue
+
+            features = obs[1:]
+            inner_product = self.innerProduct(features)
+
+            if y * inner_product < 1:
+                updateSet.append(obs)
+        
+        # Update weight vector using the update set
+        self.updateWeights(self.lamb, t, k, updateSet)
+
     def updateWeights(self, lamb, t, k, updateSet):
         stepKeys = self.gradientStep(lamb, t, k, updateSet)
         self.projectStep(lamb, stepKeys)

@@ -34,34 +34,16 @@ class Pegasos:
                 currentBatch.append(splitLine)
 
                 if len(currentBatch) >= self.batchSize:
-                    self.processBatch(currentBatch)
+                    self.vector.processBatch(currentBatch, self.t)
                     self.t = self.t + 1
                     currentBatch = []
 
-            if len(currentBatch) > 0: self.processBatch(currentBatch)
+            if len(currentBatch) > 0:
+                self.vector.processBatch(currentBatch, self.t)
+
             inputfile.close()
 
-    def processBatch(self, currentBatch):
-        k = len(currentBatch)
-        updateSet = []
-        # Determine which items in the batch contribute to loss
-        for obs in currentBatch:
-            if len(obs) < 2: continue
-            y = int(obs[0])
-
-            if y != -1 and y != 1:
-                print "Training labels must be either -1 or 1"
-                return
-
-            features = obs[1:]
-            inner_product = self.vector.innerProduct(features)
-            if y * inner_product < 1:
-                updateSet.append(obs)
-        
-        # Update weight vector with information from updateSet
-        self.vector.updateWeights(self.lamb, self.t, k, updateSet)
-
-    def predict(self, instance):
+def predict(self, instance):
         prediction = self.vector.innerProduct(instance)
         return prediction
 
