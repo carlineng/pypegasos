@@ -44,17 +44,18 @@ class Pegasos:
             inputfile.close()
 
 def predict(self, instance):
-        prediction = self.vector.innerProduct(instance)
-        return prediction
+    prediction = self.vector.innerProduct(instance)
+    return prediction
 
-    def writeWeights(self, filename=None):
-        if self.outputfile is None and filename is None:
-            print "No input file specified."
-        else:
-            if filename is None:
-                filename = self.outputfile
-            
-            outf = open(filename, 'w')
-            for w in self.vector.weights:
-                outf.write(str(w) + '\n')
-            outf.close()
+def writeWeights(self, filename=None):
+    if self.outputfile is None and filename is None:
+        print "No input file specified."
+    else:
+        if filename is None:
+            filename = self.outputfile
+
+        outf = open(filename, 'w')
+        for w in self.vector.weights:
+        outf.write(str(w) + '\n')
+        outf.close()
+
