@@ -56,6 +56,6 @@ def writeWeights(self, filename=None):
 
         outf = open(filename, 'w')
         for w in self.vector.weights:
-        outf.write(str(w) + '\n')
+            outf.write(str(w) + '\n')
         outf.close()
 
