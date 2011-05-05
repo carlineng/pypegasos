@@ -45,7 +45,7 @@ class VowpalVector:
             y = int(obs[0])
 
             if y != -1 and y != 1:
-                print("Disregarding observation because of invalid training
+                print("Disregarding observation because of invalid training \
                       observation.  Labels must be either -1 or 1")
                 continue
 
